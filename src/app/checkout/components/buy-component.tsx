@@ -48,7 +48,7 @@ export default function BuyComponent() {
         }
     };
 
-    // Submit the identification form when clicking the buy button
+
     const handleBuyClick = () => {
         const formEl = document.getElementById("identificacao-form") as HTMLFormElement | null;
         if (!formEl) return;
@@ -59,6 +59,17 @@ export default function BuyComponent() {
             formEl.dispatchEvent(event);
         }
     };
+
+    const [isSubmitting, setIsSubmitting] = useState(false)
+
+    useEffect(() => {
+        const onSubmitting = (e: Event) => {
+            const custom = e as CustomEvent<boolean>
+            setIsSubmitting(!!custom.detail)
+        }
+        window.addEventListener('checkout:submitting', onSubmitting as EventListener)
+        return () => window.removeEventListener('checkout:submitting', onSubmitting as EventListener)
+    }, [])
 
     return (
         <Card className="bg-transparent">
@@ -150,9 +161,11 @@ export default function BuyComponent() {
 
                 {/* Botão de Compra Melhorado */}
                 <Button
-                    className="text-white bg-gradient-to-r from-green-600 to-green-700 w-full h-14 text-lg font-bold hover:from-green-700 hover:to-green-800 cursor-pointer shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
-                    onClick={handleBuyClick} aria-label="Confirmar e ir para pagamento PIX">
-                    🔥 Liberar meu acesso imediato
+                    className="text-white bg-gradient-to-r from-green-600 to-green-700 w-full h-14 text-lg font-bold hover:from-green-700 hover:to-green-800 cursor-pointer shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-70 disabled:cursor-not-allowed"
+                    onClick={handleBuyClick} aria-label="Confirmar e ir para pagamento PIX"
+                    disabled={isSubmitting}
+                >
+                    {isSubmitting ? 'Gerando pagamento…' : '🔥 Liberar meu acesso imediato'}
                 </Button>
             </CardFooter>
         </Card>

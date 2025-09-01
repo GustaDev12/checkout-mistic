@@ -27,7 +27,8 @@ const formatCPF = (v: string) => {
     return digits
 }
 const formatBrazilPhone = (v: string) => {
-    const d = onlyDigits(v).slice(0, 11)
+    const d = onlyDigits(v || "").slice(0, 11)
+    if (d.length === 0) return ""
     if (d.length <= 2) return `(${d}`
     if (d.length <= 6) return `(${d.slice(0, 2)}) ${d.slice(2)}`
     if (d.length <= 10) return `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6, 10)}`
@@ -43,39 +44,48 @@ export default function FormIndetificacao() {
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
         if (loading) return null;
         setLoading(true)
-        const payment_create = await createPayment({ ...data, upSells });
-        if (payment_create) {
-            try {
-                const toPersist = {
-                    internalTransactionId: payment_create.internalTransactionId,
-                    providerTransactionId: payment_create.transactionId,
-                    copyPaste: payment_create.copyPaste,
-                    qrcodeUrl: payment_create.qrcodeUrl,
-                    amount: payment_create.transactionAmount,
-                    state: payment_create.transactionState,
-                    method: payment_create.transactionMethod,
-                    type: payment_create.transactionType,
-                    fee: payment_create.transactionFee,
-                    payer: payment_create.payer,
-                    upSells,
-                    customer: {
-                        name: data.name,
-                        email: data.email,
-                        cpf: data.cpf,
-                        phone: data.phone,
-                    },
-                }
-                try {
-                    const expires = new Date(Date.now() + 30 * 60 * 1000).toUTCString()
-                    if (typeof window !== 'undefined') {
-                        window.localStorage.setItem('payment_info', JSON.stringify(toPersist))
-                    }
-                    document.cookie = `payment_info=${encodeURIComponent(JSON.stringify(toPersist))}; path=/; expires=${expires}; samesite=Lax`
-                } catch {}
-            } catch {}
-            router.push("/checkout/pagamento")
+        if (typeof window !== 'undefined') {
+            window.dispatchEvent(new CustomEvent('checkout:submitting', { detail: true }))
         }
-        setLoading(false)
+        try {
+            const payment_create = await createPayment({ ...data, upSells });
+            if (payment_create) {
+                try {
+                    const toPersist = {
+                        internalTransactionId: payment_create.internalTransactionId,
+                        providerTransactionId: payment_create.transactionId,
+                        copyPaste: payment_create.copyPaste,
+                        qrcodeUrl: payment_create.qrcodeUrl,
+                        amount: payment_create.transactionAmount,
+                        state: payment_create.transactionState,
+                        method: payment_create.transactionMethod,
+                        type: payment_create.transactionType,
+                        fee: payment_create.transactionFee,
+                        payer: payment_create.payer,
+                        upSells,
+                        customer: {
+                            name: data.name,
+                            email: data.email,
+                            cpf: data.cpf,
+                            phone: data.phone,
+                        },
+                    }
+                    try {
+                        const expires = new Date(Date.now() + 30 * 60 * 1000).toUTCString()
+                        if (typeof window !== 'undefined') {
+                            window.localStorage.setItem('payment_info', JSON.stringify(toPersist))
+                        }
+                        document.cookie = `payment_info=${encodeURIComponent(JSON.stringify(toPersist))}; path=/; expires=${expires}; samesite=Lax`
+                    } catch {}
+                } catch {}
+                router.push("/checkout/pagamento")
+            }
+        } finally {
+            setLoading(false)
+            if (typeof window !== 'undefined') {
+                window.dispatchEvent(new CustomEvent('checkout:submitting', { detail: false }))
+            }
+        }
     }
 
     return (

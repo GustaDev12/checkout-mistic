@@ -17,7 +17,7 @@ export const createPayment = async ( data: { name: string, email: string, cpf: s
         }))
         
         if (upSells) {
-            totalAmount = upSells.reduce((acc, cur) => acc + cur.preco, 0)
+            totalAmount = totalAmount + upSells.reduce((acc, cur) => acc + cur.preco, 0)
         }
         const response = await fetch("https://api.misticpay.com/api/transactions/create", {
             method: "POST",
