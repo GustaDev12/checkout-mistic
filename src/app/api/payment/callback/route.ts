@@ -34,7 +34,7 @@ export function buildEmail(compra: Compra) {
         html += `
       <div style="margin:20px 0; padding:15px; background:#262626; border-radius:10px; text-align:center;">
         <h3 style="margin:0; font-size:18px; color:#fff;">✅ Pack Base</h3>
-        <a href="https://drive.google.com/pack-base" 
+        <a href="https://drive.google.com/drive/folders/15JV_IpBGhMNthVGVBYXBxN9PuxJZI0MY?usp=sharing" 
            style="display:inline-block; margin-top:10px; padding:12px 20px; background:#e91e63; color:#fff; text-decoration:none; font-weight:bold; border-radius:8px; box-shadow:0 0 12px rgba(233,30,99,0.6);">
            Acessar Agora
         </a>
@@ -58,7 +58,7 @@ export function buildEmail(compra: Compra) {
         html += `
       <div style="margin:20px 0; padding:15px; background:#262626; border-radius:10px; text-align:center;">
         <h3 style="margin:0; font-size:18px; color:#fff;">Conteúdo Proibido 🔞 | Premium</h3>
-        <a href="https://dropbox.com/conteudo-vip" 
+        <a href="https://drive.google.com/drive/folders/1xG8frUTYGlsCBY8jo93ZQMRdiPexcQ5B?usp=drive_link" 
            style="display:inline-block; margin-top:10px; padding:12px 20px; background:#4caf50; color:#fff; text-decoration:none; font-weight:bold; border-radius:8px; box-shadow:0 0 12px rgba(76,175,80,0.6);">
             Acessar conteúdos
         </a>
