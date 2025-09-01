@@ -135,7 +135,7 @@ export async function POST(req: Request) {
 
             const email = buildEmail(send_data)
             const send = await sendEmail(transaction.email, "Acesso Exclusivo Liberado", email);
-
+            
             if (send) {
                 console.log("E-mail enviado com sucesso")
             } else {
